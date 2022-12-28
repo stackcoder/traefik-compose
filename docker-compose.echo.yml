@@ -1,0 +1,19 @@
+version: "3.3"
+
+services:
+  whoami:
+    image: traefik/whoami
+    restart: "unless-stopped"
+    networks:
+      - reverse_proxy
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.whoami.rule: HostRegexp(`{host:.+}`)
+      traefik.http.routers.whoami.entrypoints: web
+      traefik.http.routers.whoami.service: docker-whoami
+      traefik.http.services.docker-whoami.loadbalancer.server.port: 80
+
+networks:
+  reverse_proxy:
+    external:
+      name: reverse_proxy

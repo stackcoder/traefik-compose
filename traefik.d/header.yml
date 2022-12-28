@@ -1,0 +1,13 @@
+# Default security headers for intranet sites
+http:
+  middlewares:
+    defaultHeader:
+      headers:
+        customFrameOptionsValue: "SAMEORIGIN"
+        browserXssFilter: true
+        contentTypeNosniff: true
+        referrerPolicy: "same-origin"
+        # Require HTTPS the next 14 days
+        stsSeconds: 1209600
+        # Only allow loading self-hosted resources
+        contentSecurityPolicy: "default-src 'self' data: blob:; script-src 'unsafe-inline' 'self'; style-src 'unsafe-inline' 'self'; font-src 'self' data:;"

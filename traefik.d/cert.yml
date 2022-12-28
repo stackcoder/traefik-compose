@@ -1,0 +1,10 @@
+#tls:
+#  certificates:
+#    - certFile: /run/secrets/https_cert
+#      keyFile: /run/secrets/https_key
+#  
+#  stores:
+#    default:
+#      defaultCertificate:
+#        certFile: /run/secrets/https_cert
+#        keyFile: /run/secrets/https_key

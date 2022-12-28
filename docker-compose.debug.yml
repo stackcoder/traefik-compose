@@ -1,0 +1,10 @@
+version: "3.3"
+
+services:
+  traefik:
+    environment:
+      # Make api and dashboard available on the traefik endpoint
+      TRAEFIK_API_INSECURE: "true"
+      TRAEFIK_LOG_LEVEL: "DEBUG"
+    ports:
+      - "127.0.0.1:8080:8080"

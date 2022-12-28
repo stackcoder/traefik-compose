@@ -1,0 +1,42 @@
+version: "3.3"
+
+services:
+  traefik:
+    image: "traefik:v2.9"
+    restart: "unless-stopped"
+    environment:
+      TRAEFIK_ACCESSLOG: "true"
+      TRAEFIK_GLOBAL_SENDANONYMOUSUSAGE: "false"
+      TRAEFIK_PILOT_DASHBOARD: "false"
+      TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT: "false"
+      TRAEFIK_PROVIDERS_DOCKER_NETWORK: "reverse_proxy"
+      TRAEFIK_PROVIDERS_FILE_DIRECTORY: "/etc/traefik.d"
+      TRAEFIK_ENTRYPOINTS_WEBINSECURE_ADDRESS: ":80"
+      TRAEFIK_ENTRYPOINTS_WEBINSECURE_HTTP_REDIRECTIONS_ENTRYPOINT_TO: "web"
+      TRAEFIK_ENTRYPOINTS_WEB_ADDRESS: ":443"
+      TRAEFIK_ENTRYPOINTS_WEB_HTTP_TLS: "true"
+      TRAEFIK_ENTRYPOINTS_WEB_HTTP_MIDDLEWARES: "defaultHeader@file"
+      # letsencrypt
+      TRAEFIK_ENTRYPOINTS_WEB_HTTP_TLS_CERTRESOLVER: "letsencrypt"
+      TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_HTTPCHALLENGE: "true"
+      TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_HTTPCHALLENGE.ENTRYPOINT: "webinsecure"
+      TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_STORAGE: "/acme/letsencrypt.json"
+      TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_CASERVER: "https://acme-staging-v02.api.letsencrypt.org/directory"
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - default
+      - reverse_proxy
+    volumes:
+      - "traefik_acme:/acme"
+      - "./traefik.d/:/etc/traefik.d/:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+volumes:
+  traefik_acme:
+
+networks:
+  reverse_proxy:
+    external:
+      name: reverse_proxy
